@@ -3,4 +3,7 @@
 	Layout = "Master.cshtml";
 }
 
-<h1>Hello World</h1>
+
+<h1>@Model.Parent.Name</h1>
+
+@Html.Raw(Model.Content)
