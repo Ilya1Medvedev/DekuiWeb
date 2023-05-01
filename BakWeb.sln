@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{52011B60-AE9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakWeb", "src\BakWeb.UI\BakWeb.csproj", "{324DAED5-FD68-42E0-B00A-2C68354B5E20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakWeb.Models", "src\BakWeb.Models\BakWeb.Models.csproj", "{DD455F74-4BCF-4970-ADA9-718623E3E3D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakWeb.Models", "src\BakWeb.Models\BakWeb.Models.csproj", "{DD455F74-4BCF-4970-ADA9-718623E3E3D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
