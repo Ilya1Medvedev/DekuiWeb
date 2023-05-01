@@ -1,0 +1,15 @@
+﻿@using BakWeb.Dtos;
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits UmbracoViewPage<ProductViewModel>
+
+@{
+    Layout = "Master.cshtml";
+}
+
+<h1>Products</h1>
+
+@foreach (var product in Model.Products)
+{
+    <h1>@product.Name</h1>
+    <img src="@product.Image" />
+}
