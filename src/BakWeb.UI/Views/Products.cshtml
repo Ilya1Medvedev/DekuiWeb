@@ -1,5 +1,12 @@
 ﻿@using BakWeb.Dtos;
+@using System.Web;
 @using Umbraco.Cms.Web.Common.PublishedModels;
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Http
+@using BakWeb.Core.Extensions
+@using X.PagedList.Web.Common
+
 @inherits UmbracoViewPage<ProductViewModel>
 
 @{
@@ -31,5 +38,17 @@
                 </div>
             }
         </div>
+        @Html.PagedListPager(Model.Products,page => $"?page={page}", new PagedListRenderOptions
+        {
+        PageClasses = new string[] { "page-link" },
+        UlElementClasses = new string[] { "pagination" },
+        LiElementClasses = new string[] { "page-item" },
+
+        //UlElementClasses = "pagination".AsEnumerableOfOne<string>(),
+        //LiElementClasses = "page-item".AsEnumerableOfOne<string>(),
+        ActiveLiElementClass = "active",
+        DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+        })
     </div>
 </section>

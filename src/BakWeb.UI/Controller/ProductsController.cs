@@ -1,4 +1,5 @@
 ﻿using BakWeb.Dtos;
+using BakWeb.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -7,6 +8,7 @@ using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco.Cms.Web.Common.PublishedModels;
 using Umbraco.Forms.Core.Services;
+using X.PagedList;
 
 namespace BakWeb.Controller
 {
@@ -32,10 +34,19 @@ namespace BakWeb.Controller
             {
                 return NotFound();
             }
+
+            var result = new ProductViewModel(currentPage, new PublishedValueFallback(_context, _variationContextAccessor));
             var products = currentPage.Children<Product>();
 
-            var result = new ProductViewModel(CurrentPage, new PublishedValueFallback(_context, _variationContextAccessor));
-            result.Products = products.Select(x => new ProductDto { Name = x.Name, Image = x.Photo?.Content, Description = x.Description, Url = x.Url() }).ToList();
+            var paginationMetadata = Request.ExtractPaginationMetadata();
+
+            result.Products = products.Select(x => new ProductDto
+            {
+                Name = x.Name,
+                Image = x.Photo?.Content,
+                Description = x.Description,
+                Url = x.Url()
+            }).ToPagedList(paginationMetadata.Page, paginationMetadata.ItemsPerPage);
 
             return CurrentTemplate(result);
         }

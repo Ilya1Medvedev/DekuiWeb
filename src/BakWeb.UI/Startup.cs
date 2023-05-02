@@ -29,11 +29,14 @@ namespace BakWeb
         /// </remarks>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddUmbraco(_env, _config)
-                .AddBackOffice()
-                .AddWebsite()
-                .AddComposers()
-                .Build();
+            var umbracoBuilder = services.AddUmbraco(_env, _config)
+                  .AddBackOffice()
+                  .AddWebsite()
+                  .AddComposers();
+
+            services.AddHttpContextAccessor();
+
+            umbracoBuilder.Build();
         }
 
         /// <summary>
