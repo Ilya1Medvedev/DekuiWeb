@@ -36,17 +36,17 @@ namespace BakWeb.Controller
                 return NotFound();
             }
 
-            var result = new ProductViewModel(currentPage, new PublishedValueFallback(_context, _variationContextAccessor));
+            var result = new ProductsViewModel(currentPage, new PublishedValueFallback(_context, _variationContextAccessor));
             var products = currentPage.Children<Product>();
 
             var paginationMetadata = Request.ExtractPaginationMetadata();
 
-            result.Products = products.Select(x => new ProductDto
+            result.Products = products.Select(product => new ProductViewModel(product, new PublishedValueFallback(_context, _variationContextAccessor))
             {
-                Name = x.Name,
-                Image = x.Photo?.Content,
-                Description = x.Description,
-                Url = x.Url()
+                DisplayName = product.Name,
+                Image = product.Photo?.Content,
+                Description = product.Description,
+                Url = product.Url()
             }).ToPagedList(paginationMetadata.Page, paginationMetadata.ItemsPerPage);
 
             return CurrentTemplate(result);
