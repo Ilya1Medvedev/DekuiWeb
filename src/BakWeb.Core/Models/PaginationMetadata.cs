@@ -4,7 +4,7 @@ public class PaginationMetadata
     public PaginationMetadata()
     {
         Page = 1;
-        ItemsPerPage = 5;
+        ItemsPerPage = 8;
     }
 
     public int ItemsPerPage { get; set; }
