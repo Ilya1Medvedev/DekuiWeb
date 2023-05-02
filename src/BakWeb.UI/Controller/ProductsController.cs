@@ -9,6 +9,7 @@ using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco.Cms.Web.Common.PublishedModels;
 using Umbraco.Forms.Core.Services;
 using X.PagedList;
+using Umbraco.Cms.Core.Security;
 
 namespace BakWeb.Controller
 {

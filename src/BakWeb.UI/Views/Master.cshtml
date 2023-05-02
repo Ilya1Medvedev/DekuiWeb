@@ -1,6 +1,11 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using Umbraco.Cms.Core.Security;
+@using Umbraco.Cms.Core.Services;
+@using Umbraco.Cms.Web.Common.PublishedModels;
 @using Umbraco.Forms.Web;
+@using BakWeb.Core.Extensions;
+
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inject IMemberManager MemberManager
 
 <html>
 <head>
@@ -28,6 +33,20 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="/products">Products</a></li>
+
+                        @{
+                            var addProductPage = Umbraco.Home()?.FirstChild<AddProduct>();
+
+                            if (addProductPage != null)
+                            {
+                                var memberHasAccess = await MemberManager.MemberHasAccessAsync(addProductPage.Path);
+                                if (memberHasAccess)
+                                {
+                                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="/add-product">Add Product</a></li>
+                                }
+                            }
+                        }
+
 
                         @*<li class="nav-item"><a class="nav-link" href="#!">About</a></li>*@
                         @*                    <li class="nav-item dropdown">
