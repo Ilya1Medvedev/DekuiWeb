@@ -4,6 +4,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="umbraco\**" />
+    <Compile Remove="uSync\**" />
+    <Content Remove="umbraco\**" />
+    <Content Remove="uSync\**" />
+    <EmbeddedResource Remove="umbraco\**" />
+    <EmbeddedResource Remove="uSync\**" />
+    <None Remove="umbraco\**" />
+    <None Remove="uSync\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Konstrukt" Version="1.6.4" />
