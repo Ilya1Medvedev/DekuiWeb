@@ -7,6 +7,7 @@ using Umbraco.Cms.Infrastructure.Scoping;
 
 namespace BakWeb.Reservation.Repositories;
 
+[Obsolete("Currently not in use and may be removed")]
 public class ReservationRepository : KonstruktRepository<ReservationEntity, int>
 {
     private readonly KonstruktRepositoryContext _konstruktContext;
