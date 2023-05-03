@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Konstrukt" Version="1.6.4" />
     <PackageReference Include="Umbraco.Cms" Version="11.3.1" />
   </ItemGroup>
 
@@ -20,6 +21,7 @@
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
     <ProjectReference Include="..\BakWeb.Core\BakWeb.Core.csproj" />
     <ProjectReference Include="..\BakWeb.Models\BakWeb.Models.csproj" />
+    <ProjectReference Include="..\BakWeb.Reservation\BakWeb.Reservation.csproj" />
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2.0.9" Condition="$(RuntimeIdentifier.StartsWith('linux')) or $(RuntimeIdentifier.StartsWith('win')) or ('$(RuntimeIdentifier)' == '' and !$([MSBuild]::IsOSPlatform('osx')))" />
   </ItemGroup>
 
