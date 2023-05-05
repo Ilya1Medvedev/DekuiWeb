@@ -28,10 +28,20 @@
                     <div class="mt-2 pr-3 content">
                         <p>@Model.Description</p>
                     </div>
-                    <div class="buttons d-flex flex-row mt-5 gap-3">
-                        <button id="reserve-button" class="btn btn-primary">Reserve Now</button>
-                        <p id="apiResult">API result will be displayed here</p>
-                    </div>
+                    @if (Model.IsReserved)
+                    {
+                        <div class="buttons d-flex flex-row mt-5 gap-3">
+                            <button id="reserve-button" class="btn btn-primary disabled">Reserve Now</button>
+                            <p>This Product is already reserved</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="buttons d-flex flex-row mt-5 gap-3">
+                            <button id="reserve-button" class="btn btn-primary">Reserve Now</button>
+                            <p id="apiResult">API result will be displayed here</p>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

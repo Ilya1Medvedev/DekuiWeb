@@ -10,19 +10,24 @@ using Umbraco.Cms.Web.Common.PublishedModels;
 using Umbraco.Forms.Core.Services;
 using X.PagedList;
 using Umbraco.Cms.Core.Security;
+using Konstrukt.Persistence;
+using BakWeb.Reservation.Entities;
+using BakWeb.Reservation.Repositories;
 
 namespace BakWeb.Controller
 {
     public class ProductsController : RenderController
     {
+        private readonly KonstruktRepository<ReservationEntity, int> _reservationsRepository;
         private readonly IRecordReaderService _recordReaderService;
         private readonly IVariationContextAccessor _variationContextAccessor;
         private readonly ServiceContext _context;
 
         public ProductsController(ILogger<RenderController> logger, ICompositeViewEngine compositeViewEngine,
             IUmbracoContextAccessor umbracoContextAccessor, IRecordReaderService recordReaderService,
-            IVariationContextAccessor variationContextAccessor, ServiceContext context) : base(logger, compositeViewEngine, umbracoContextAccessor)
+            IVariationContextAccessor variationContextAccessor, ServiceContext context, IKonstruktRepositoryFactory repositoryFactory) : base(logger, compositeViewEngine, umbracoContextAccessor)
         {
+            _reservationsRepository = repositoryFactory.GetRepository<ReservationEntity, int>();
             _recordReaderService = recordReaderService;
             _variationContextAccessor = variationContextAccessor;
             _context = context;
@@ -46,7 +51,9 @@ namespace BakWeb.Controller
                 DisplayName = product.Name,
                 Image = product.Photo?.Content,
                 Description = product.Description,
-                Url = product.Url()
+                Url = product.Url(),
+                IsReserved = _reservationsRepository.GetAll(x => x.ProductId == product.Key 
+                    && x.ReservationEndDate > DateTime.Now).Model.Any()
             }).ToPagedList(paginationMetadata.Page, paginationMetadata.ItemsPerPage);
 
             return CurrentTemplate(result);
