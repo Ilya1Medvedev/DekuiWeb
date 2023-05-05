@@ -29,7 +29,8 @@
                         <p>@Model.Description</p>
                     </div>
                     <div class="buttons d-flex flex-row mt-5 gap-3">
-                        <button class="btn btn-primary">Reserve Now</button>
+                        <button id="reserve-button" class="btn btn-primary">Reserve Now</button>
+                        <p id="apiResult">API result will be displayed here</p>
                     </div>
                 </div>
             </div>
@@ -57,3 +58,37 @@
     }
 
 </style>
+
+@section Scripts {
+    <script>
+        console.log("Click")
+        document.getElementById('reserve-button').addEventListener('click', async () => {
+            const apiUrl = '/umbraco/api/reservations/makereservation';
+            const data = {
+                productId: '@Model.Key'
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                } else {
+                    document.getElementById('apiResult').innerText = "Success"
+                }
+
+                //const result = await response.json();
+                //document.getElementById('apiResult').innerText = JSON.stringify(result);
+            } catch (error) {
+                console.error('Error calling API:', error);
+                document.getElementById('apiResult').innerText = 'Error calling API';
+            }
+        });
+    </script>
+}
