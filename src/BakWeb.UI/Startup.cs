@@ -1,6 +1,9 @@
 using Konstrukt.Extensions;
 using BakWeb.Reservation.Entities;
 using BakWeb.Reservation.Repositories;
+using SendGrid;
+using BakWeb.Options;
+using BakWeb.Services;
 
 namespace BakWeb;
 
@@ -33,45 +36,49 @@ public class Startup
     /// </remarks>
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddUmbraco(_env, _config)
-              .AddBackOffice()
-              .AddWebsite()
-              .AddKonstrukt(cfg =>
-              {
-                  cfg.AddSectionAfter("media", "Repositories", sectionConfig => sectionConfig
-                      .Tree(treeConfig => treeConfig
-                          .AddCollection<ReservationEntity>(x => x.Id, "Reservation", "Reservations", "A reservation entity",
-                          "icon-umb-users", "icon-umb-users", collectionConfig => collectionConfig
-                              .SetNameProperty(p => p.Name)
-                              .ListView(listViewConfig => listViewConfig
-                                  .AddField(p => p.ProductId).SetHeading("Product Id")
-                                  .AddField(p => p.MemberId).SetHeading("Member Id")
-                                  .AddField(p => p.UniqueNumber).SetHeading("Unique Number")
-                              )
-                              .Editor(editorConfig => editorConfig
-                                  .AddTab("General", tabConfig => tabConfig
-                                      .AddFieldset("General", fieldsetConfig => fieldsetConfig
-                                          .AddField(p => p.ProductId).MakeRequired()
-                                          .SetValidationRegex(@"^[{(]?[0-9A-Fa-f]{8}[-]?([0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$")
-                                          .AddField(p => p.MemberId).MakeRequired()
-                                          .SetValidationRegex(@"^[{(]?[0-9A-Fa-f]{8}[-]?([0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$")
-                                          .AddField(p => p.UniqueNumber).MakeRequired()
-                                          .AddField(p => p.ReservationDate).SetDefaultValue(DateTime.Now)
-                                          .AddField(p => p.ReservationEndDate).SetDefaultValue(DateTime.Now.AddDays(1))
-                                          .AddField(p => p.IsReservationClosed)
-                                      )
-                                  )
-                              )
-                          )
-                      )
-                  );
-              })
-              .AddComposers()
-              .Build();
+        var umbracoBuilder = services.AddUmbraco(_env, _config)
+               .AddBackOffice()
+               .AddWebsite()
+               .AddKonstrukt(cfg =>
+               {
+                   cfg.AddSectionAfter("media", "Repositories", sectionConfig => sectionConfig
+                       .Tree(treeConfig => treeConfig
+                           .AddCollection<ReservationEntity>(x => x.Id, "Reservation", "Reservations", "A reservation entity",
+                           "icon-umb-users", "icon-umb-users", collectionConfig => collectionConfig
+                               .SetNameProperty(p => p.Name)
+                               .ListView(listViewConfig => listViewConfig
+                                   .AddField(p => p.ProductId).SetHeading("Product Id")
+                                   .AddField(p => p.MemberId).SetHeading("Member Id")
+                                   .AddField(p => p.UniqueNumber).SetHeading("Unique Number")
+                               )
+                               .Editor(editorConfig => editorConfig
+                                   .AddTab("General", tabConfig => tabConfig
+                                       .AddFieldset("General", fieldsetConfig => fieldsetConfig
+                                           .AddField(p => p.ProductId).MakeRequired()
+                                           .SetValidationRegex(@"^[{(]?[0-9A-Fa-f]{8}[-]?([0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$")
+                                           .AddField(p => p.MemberId).MakeRequired()
+                                           .SetValidationRegex(@"^[{(]?[0-9A-Fa-f]{8}[-]?([0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$")
+                                           .AddField(p => p.UniqueNumber).MakeRequired()
+                                           .AddField(p => p.ReservationDate).SetDefaultValue(DateTime.Now)
+                                           .AddField(p => p.ReservationEndDate).SetDefaultValue(DateTime.Now.AddDays(1))
+                                           .AddField(p => p.IsReservationClosed)
+                                       )
+                                   )
+                               )
+                           )
+                       )
+                   );
+               })
+               .AddComposers();
 
-        //services.AddHttpContextAccessor();
+        // SendGrid
+        var sendGridSection = _config.GetSection("SendGrid");
+        services.Configure<SendGridOptions>(sendGridSection);
+        var sendGridApiKey = sendGridSection.GetValue<string>("ApiKey");
+        services.AddScoped<ISendGridClient, SendGridClient>(x => new SendGridClient(sendGridApiKey));
+        services.AddScoped<SendGridService>();
 
-        //umbracoBuilder.Build();
+        umbracoBuilder.Build();
     }
 
     /// <summary>

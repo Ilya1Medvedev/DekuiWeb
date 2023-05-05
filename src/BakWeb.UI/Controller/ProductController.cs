@@ -35,7 +35,8 @@ namespace BakWeb.Controller
                 DisplayName = currentPage.Name,
                 Image = currentPage.Photo?.Content,
                 Description = currentPage.Description,
-                Url = currentPage.Url()
+                Url = currentPage.Url(),
+
             };
 
             return CurrentTemplate(productViewModel);

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Konstrukt" Version="1.6.4" />
+    <PackageReference Include="SendGrid" Version="9.28.1" />
     <PackageReference Include="Umbraco.Cms" Version="11.3.1" />
   </ItemGroup>
 
@@ -44,6 +45,7 @@
     <!-- Remove RazorCompileOnBuild and RazorCompileOnPublish when not using ModelsMode InMemoryAuto -->
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
+    <UserSecretsId>64bdaac3-672f-4957-96c4-fb56b2eb1e9d</UserSecretsId>
   </PropertyGroup>
 
   

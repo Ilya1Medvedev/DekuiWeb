@@ -1,8 +1,11 @@
 ﻿using BakWeb.Dtos;
 using BakWeb.Extensions;
+using BakWeb.Options;
 using BakWeb.Reservation.Entities;
+using BakWeb.Services;
 using Konstrukt.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common;
 using Umbraco.Cms.Web.Common.Controllers;
@@ -14,22 +17,26 @@ namespace BakWeb.Controller
     {
         private readonly IMemberService _memberService;
         private readonly IUmbracoHelperAccessor _umbracoHelperAccessor;
+        private readonly SendGridService _sendGridService;
+        private readonly IOptions<SendGridOptions> _sendGridOptions;
         private KonstruktRepository<ReservationEntity, int> _reservationsRepository;
 
         private readonly int ReservationLimit = 3;
         private readonly int ReservationCodeLength = 6;
 
         public ReservationsController(IKonstruktRepositoryFactory repositoryFactory, IMemberService memberService,
-            IUmbracoHelperAccessor umbracoHelperAccessor)
+            IUmbracoHelperAccessor umbracoHelperAccessor, SendGridService sendGridService, IOptions<SendGridOptions> sendGridOptions)
         {
             _reservationsRepository = repositoryFactory.GetRepository<ReservationEntity, int>();
             _memberService = memberService;
             _umbracoHelperAccessor = umbracoHelperAccessor;
+            _sendGridService = sendGridService;
+            _sendGridOptions = sendGridOptions;
         }
 
         [UmbracoMemberAuthorize]
         [HttpPost]
-        public IActionResult MakeReservation([FromBody] ReservationRequestDto reservationRequest)
+        public async Task<IActionResult> MakeReservation([FromBody] ReservationRequestDto reservationRequest)
         {
 
             var umbracoHelperAttempt = _umbracoHelperAccessor.TryGetUmbracoHelper(out var umbracoHelper);
@@ -73,8 +80,22 @@ namespace BakWeb.Controller
                 UniqueNumber = GenerateUniqueCode()
             };
 
-            _reservationsRepository.Insert(reservation);
-            // TODO : Send unique code to member EMAIL
+            var reservationResult = _reservationsRepository.Insert(reservation);
+            if (!reservationResult.Success)
+            {
+                return BadRequest("Failed to create a reservation");
+            }
+
+            await _sendGridService.SendEmailWithTemplateAsync(member.Email,
+                _sendGridOptions.Value.Templates!.ReservationConfirationTemplateId!,
+                new
+                {
+                    SenderName = member.Name,
+                    ProductName = product.Name,
+                    UniqueNumber = reservation.UniqueNumber,
+                    ReservationEndDate = reservation.ReservationEndDate.ToString("U")
+                });
+
             // TODO : Send details to LOCKER API
 
             return Ok();
