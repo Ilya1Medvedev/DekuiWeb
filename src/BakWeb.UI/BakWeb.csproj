@@ -14,6 +14,24 @@
     <None Remove="umbraco\**" />
     <None Remove="uSync\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="wwwroot\media\0mlk5n1m\photo_2023-04-05_22-54-47.jpg" />
+    <Content Include="wwwroot\media\1nyjr0gs\g26e58f1c43e31a45012ee73ca9f89c9de79374af892c5cd926ec8d9280305d44490283cfd869172c8f8ea322827287f3_640.jpg" />
+    <Content Include="wwwroot\media\2c3hgl1u\gdabf3eef0302e9ca1dab90a84b38a24f8eb29b7ea68d93c527f2af5de37ae8689815925f8df8225096338e3e36ef69f2_640.jpg" />
+    <Content Include="wwwroot\media\3ocdsv3p\gbbfcd598482ff3021753b95f414d17b0aa6bd3df0d542500492bb842f72fd34781c006c39a1c63d0dfc54a38910a0390_640.jpg" />
+    <Content Include="wwwroot\media\forms\upload\form_ff472c1e-b986-4fc1-b585-eff84cd7c1b6\05058f5a-f3a9-4d98-be71-2212c3ee44cf\photo_2023-04-05_22-54-47.jpg" />
+    <Content Include="wwwroot\media\forms\upload\form_ff472c1e-b986-4fc1-b585-eff84cd7c1b6\5e7414c9-e25f-48f5-b74e-418fcc2685f9\photo_2023-04-19_12-14-32.jpg" />
+    <Content Include="wwwroot\media\forms\upload\form_ff472c1e-b986-4fc1-b585-eff84cd7c1b6\74c8572f-ff02-4fa8-9040-3bb696505a28\photo_2023-04-19_12-14-32.jpg" />
+    <Content Include="wwwroot\media\forms\upload\form_ff472c1e-b986-4fc1-b585-eff84cd7c1b6\9f64b7a5-e316-40c3-87a9-6f761807ee24\photo_2023-04-05_22-54-47.jpg" />
+    <Content Include="wwwroot\media\forms\upload\form_ff472c1e-b986-4fc1-b585-eff84cd7c1b6\ebbf3896-6937-41e9-b395-b5d179f99598\photo_2023-04-19_12-14-32.jpg" />
+    <Content Include="wwwroot\media\gzvhwzh4\g0847013ac71e374102dc8d94e3173d5d60dc3082ff5bda70b85bb5b431f4917eb914ae06bf1f157dc2f8213788f724d1_640.jpg" />
+    <Content Include="wwwroot\media\j2bou2lx\g1111f27f4f7226fdb576e72dc276311d62c9a5eee738ff3bc992cdd5201b64750c5309b983dd93b94274587c8596efe7_640.jpg" />
+    <Content Include="wwwroot\media\liihejce\g7e1c08504f676a43ef1b698935f46e6dc88cea5be9b2ced450d6524af00718587cc42a6533ff6001005e36d477a4e6cd_640.jpg" />
+    <Content Include="wwwroot\media\t3qbplmo\ge4f77f62bfbc2e959d5d86094df12323029eb51b6031e072cb4d1de0961f671d5329682fcd4f66d17661c9f9c1b9ef36_640.jpg" />
+    <Content Include="wwwroot\media\tvmbnl2j\g2e8da18aee0bd8533f06fe46380c8718b0d6ecc247cd1beac557398fdda887c8b3c1db248822716206c61ef822daddd1_640.jpg" />
+    <Content Include="wwwroot\media\vk0klj0l\g943321d6f732958642066e19d2fe383fe74ee3bd1bafcfa83b19b2d3c46af1da6a2418c81f7456ce2eb60e38b93a2b35_640.jpg" />
+    <Content Include="wwwroot\media\w1wjmpbb\gaa28b24267c9c888d116f1f26c63cbf60c312f80add206905ea059fea409bb0b80043fbd0f8dc6e79d19829876ec2f75_640.jpg" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Konstrukt" Version="1.6.4" />
