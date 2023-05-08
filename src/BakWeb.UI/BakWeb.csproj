@@ -51,6 +51,7 @@
     <ProjectReference Include="..\BakWeb.Core\BakWeb.Core.csproj" />
     <ProjectReference Include="..\BakWeb.Models\BakWeb.Models.csproj" />
     <ProjectReference Include="..\BakWeb.Reservation\BakWeb.Reservation.csproj" />
+    <ProjectReference Include="..\BakWeb.TerminalControllerClient\BakWeb.TerminalControllerClient.csproj" />
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2.0.9" Condition="$(RuntimeIdentifier.StartsWith('linux')) or $(RuntimeIdentifier.StartsWith('win')) or ('$(RuntimeIdentifier)' == '' and !$([MSBuild]::IsOSPlatform('osx')))" />
   </ItemGroup>
 

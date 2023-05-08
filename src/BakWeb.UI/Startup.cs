@@ -4,6 +4,8 @@ using BakWeb.Reservation.Repositories;
 using SendGrid;
 using BakWeb.Options;
 using BakWeb.Services;
+using BakWeb.TerminalControllerClient.Models;
+using BakWeb.TerminalControllerClient;
 
 namespace BakWeb;
 
@@ -77,6 +79,14 @@ public class Startup
         var sendGridApiKey = sendGridSection.GetValue<string>("ApiKey");
         services.AddScoped<ISendGridClient, SendGridClient>(x => new SendGridClient(sendGridApiKey));
         services.AddScoped<SendGridService>();
+
+
+        // Terminal controller
+        services.Configure<TerminalControllerOptions>(_config.GetSection("TerminalController"));
+        services.AddHttpClient<TerminalClient>();
+
+        // Form Options
+        services.Configure<FormOptions>(_config.GetSection("Forms"));
 
         umbracoBuilder.Build();
     }

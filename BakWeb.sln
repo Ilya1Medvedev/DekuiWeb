@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakWeb.Models", "src\BakWeb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakWeb.Core", "src\BakWeb.Core\BakWeb.Core.csproj", "{934B0FB5-97B4-4C8F-820A-2661E9CE2C08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakWeb.Reservation", "src\BakWeb.Reservation\BakWeb.Reservation.csproj", "{2E90E22C-481F-4836-904F-655D47C37DF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakWeb.Reservation", "src\BakWeb.Reservation\BakWeb.Reservation.csproj", "{2E90E22C-481F-4836-904F-655D47C37DF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakWeb.TerminalControllerClient", "src\BakWeb.TerminalControllerClient\BakWeb.TerminalControllerClient.csproj", "{10B6537C-F840-40E5-B727-49EBD2C39C92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{2E90E22C-481F-4836-904F-655D47C37DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E90E22C-481F-4836-904F-655D47C37DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E90E22C-481F-4836-904F-655D47C37DF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10B6537C-F840-40E5-B727-49EBD2C39C92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10B6537C-F840-40E5-B727-49EBD2C39C92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10B6537C-F840-40E5-B727-49EBD2C39C92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10B6537C-F840-40E5-B727-49EBD2C39C92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 		{DD455F74-4BCF-4970-ADA9-718623E3E3D1} = {52011B60-AE99-474E-AFC6-506364F88C8C}
 		{934B0FB5-97B4-4C8F-820A-2661E9CE2C08} = {52011B60-AE99-474E-AFC6-506364F88C8C}
 		{2E90E22C-481F-4836-904F-655D47C37DF4} = {52011B60-AE99-474E-AFC6-506364F88C8C}
+		{10B6537C-F840-40E5-B727-49EBD2C39C92} = {52011B60-AE99-474E-AFC6-506364F88C8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECC94153-6842-4FC4-A200-5C3D47C3757B}
