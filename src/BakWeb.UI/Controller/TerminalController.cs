@@ -40,12 +40,15 @@ namespace BakWeb.Controller
             throw new NotImplementedException();
         }
 
+
+        // PATH : /umbraco/api/terminal/add-product
         [HttpPost("/add-product")]
         public async Task<HttpResponseMessage> AddProduct([FromBody] AddProductRequest addProductRequest)
         {
             return await _terminalClient.AddProduct(addProductRequest);
         }
 
+        // PATH : /umbraco/api/terminal/add-reservation
         [HttpPost("/add-reservation")]
         public async Task<HttpResponseMessage> AddProduct([FromBody] AddReseravationRequest addReseravationRequest)
         {
