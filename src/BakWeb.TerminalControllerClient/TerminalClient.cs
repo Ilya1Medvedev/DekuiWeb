@@ -17,23 +17,29 @@ public class TerminalClient
 
     public async Task<bool> TryAddProduct(AddProductRequest addProductRequest)
     {
-        var response = await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}/api/addproduct", addProductRequest);
-        return response.IsSuccessStatusCode;
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}/api/addproduct", addProductRequest);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public async Task<bool> TryAddReservation(AddReseravationRequest addReseravationRequest)
     {
-        var response = await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}/api/addreservation", addReseravationRequest);
-        return response.IsSuccessStatusCode;
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}/api/addreservation", addReseravationRequest);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception)
+        {
+
+            return false;
+        }
+
     }
-
-    public async Task<HttpResponseMessage> AddProduct(AddProductRequest addProductRequest) =>
-        await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}/api/addproduct", addProductRequest);
-
-    public async Task<HttpResponseMessage> AddReservation(AddReseravationRequest addReseravationRequest) =>
-       await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}/api/addreservation", addReseravationRequest);
-
-    public async Task<HttpResponseMessage> Ping() => 
-        await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}", new { });
-
 }

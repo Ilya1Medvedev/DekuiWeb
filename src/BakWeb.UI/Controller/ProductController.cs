@@ -39,7 +39,7 @@ namespace BakWeb.Controller
             var productViewModel = new ProductViewModel(currentPage, new PublishedValueFallback(_context, _variationContextAccessor))
             {
                 DisplayName = currentPage.Name,
-                Image = currentPage.Photo?.Content,
+                Image = currentPage.Photo,
                 Description = currentPage.Description,
                 Url = currentPage.Url(),
                 IsReserved = _reservationsRepository.GetAll(x => x.ProductId == currentPage.Key 

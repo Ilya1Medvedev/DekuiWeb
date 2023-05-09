@@ -11,6 +11,8 @@
 
     public class SendGridTemplateOptions
     {
-        public string? ReservationConfirationTemplateId { get; set; }
+        public string? ReservationConfirmationTemplateId { get; set; }
+        public string? AddProductConfirmationTemplateId { get; set; }
+
     }
 }

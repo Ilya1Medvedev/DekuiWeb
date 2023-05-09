@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco.Forms.Core.Services;
-using Umbraco.Forms.Core.Enums;
 using BakWeb.TerminalControllerClient;
-using BakWeb.TerminalControllerClient.Models;
+using Umbraco.Cms.Core.Services;
 
 namespace BakWeb.Controller
 {
@@ -14,48 +13,46 @@ namespace BakWeb.Controller
         private readonly IRecordReaderService _recordReaderService;
         private readonly IOptions<FormOptions> _formOptions;
         private readonly TerminalClient _terminalClient;
+        private readonly IContentService _contentService;
 
-        public TerminalController(IRecordReaderService recordReaderService, IOptions<FormOptions> formOptions, TerminalClient terminalClient)
+        public TerminalController(IRecordReaderService recordReaderService, IOptions<FormOptions> formOptions,
+            TerminalClient terminalClient, IContentService contentService)
         {
             _recordReaderService = recordReaderService;
             _formOptions = formOptions;
             _terminalClient = terminalClient;
+            _contentService = contentService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> VerifyProduct([FromQuery] Guid productId)
+        public IActionResult VerifyProduct([FromQuery] Guid productId)
         {
-            var formRecords = _recordReaderService.GetRecordsFromForm(_formOptions.Value.AddProductFormId, 1, int.MaxValue).Items.ToList();
+            var product = _contentService.GetById(productId);
 
-            var productRequestForm = formRecords.Where(x => x.State == FormState.Submitted &&
-                x.RecordFields.FirstOrDefault(y => y.Value.Alias == "ProductId").Value.ValuesAsString() == productId.ToString());
+            if (product == null)
+            {
+                return NotFound("Product not found");
+            }
 
+            product.SetValue("Status", "Approved");
 
-            throw new NotImplementedException();
+            _contentService.Save(product);
+            return Ok();
         }
 
         [HttpGet]
-        public async Task<IActionResult> DeleteProduct([FromQuery] Guid productId)
+        public IActionResult DeleteProduct([FromQuery] Guid productId)
         {
-            throw new NotImplementedException();
+            var product = _contentService.GetById(productId);
+
+            if (product == null)
+            {
+                return NotFound("Product not found");
+            }
+
+            _contentService.Delete(product);
+
+            return Ok();
         }
-
-
-        // PATH : /umbraco/api/terminal/add-product
-        [HttpPost("/add-product")]
-        public async Task<HttpResponseMessage> AddProduct([FromBody] AddProductRequest addProductRequest)
-        {
-            return await _terminalClient.AddProduct(addProductRequest);
-        }
-
-        // PATH : /umbraco/api/terminal/add-reservation
-        [HttpPost("/add-reservation")]
-        public async Task<HttpResponseMessage> AddProduct([FromBody] AddReseravationRequest addReseravationRequest)
-        {
-            return await _terminalClient.AddReservation(addReseravationRequest);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Ping() => Ok(await _terminalClient.Ping());
     }
 }

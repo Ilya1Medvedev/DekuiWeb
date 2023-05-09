@@ -3,6 +3,8 @@ using BakWeb.Extensions;
 using BakWeb.Options;
 using BakWeb.Reservation.Entities;
 using BakWeb.Services;
+using BakWeb.TerminalControllerClient;
+using BakWeb.TerminalControllerClient.Models;
 using Konstrukt.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -19,19 +21,22 @@ namespace BakWeb.Controller
         private readonly IUmbracoHelperAccessor _umbracoHelperAccessor;
         private readonly SendGridService _sendGridService;
         private readonly IOptions<SendGridOptions> _sendGridOptions;
+        private readonly TerminalClient _terminalClient;
         private KonstruktRepository<ReservationEntity, int> _reservationsRepository;
 
         private readonly int ReservationLimit = 3;
         private readonly int ReservationCodeLength = 6;
 
         public ReservationsController(IKonstruktRepositoryFactory repositoryFactory, IMemberService memberService,
-            IUmbracoHelperAccessor umbracoHelperAccessor, SendGridService sendGridService, IOptions<SendGridOptions> sendGridOptions)
+            IUmbracoHelperAccessor umbracoHelperAccessor, SendGridService sendGridService, IOptions<SendGridOptions> sendGridOptions,
+            TerminalClient terminalClient)
         {
             _reservationsRepository = repositoryFactory.GetRepository<ReservationEntity, int>();
             _memberService = memberService;
             _umbracoHelperAccessor = umbracoHelperAccessor;
             _sendGridService = sendGridService;
             _sendGridOptions = sendGridOptions;
+            _terminalClient = terminalClient;
         }
 
         [UmbracoMemberAuthorize]
@@ -87,16 +92,24 @@ namespace BakWeb.Controller
             }
 
             await _sendGridService.SendEmailWithTemplateAsync(member.Email,
-                _sendGridOptions.Value.Templates!.ReservationConfirationTemplateId!,
+                _sendGridOptions.Value.Templates!.ReservationConfirmationTemplateId!,
                 new
                 {
                     SenderName = member.Name,
                     ProductName = product.Name,
-                    UniqueNumber = reservation.UniqueNumber,
+                    UniqueCode = reservation.UniqueNumber,
                     ReservationEndDate = reservation.ReservationEndDate.ToString("U")
                 });
 
-            // TODO : Send details to LOCKER API
+            var terminalReservationRequest = new AddReseravationRequest
+            {
+                MemberId = member.Key,
+                ProductId = reservation.ProductId,
+                PhotoUrl = product.Value<string>("Photo"),
+                UniqueCode = reservation.UniqueNumber
+            };
+
+            await _terminalClient.TryAddReservation(terminalReservationRequest);
 
             return Ok();
         }

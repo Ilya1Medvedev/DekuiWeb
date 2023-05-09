@@ -22,7 +22,7 @@
                     <div class="card h-100">
                         @if (product.Image != null)
                         {
-                            <img class="card-img-top" src="@Url.GetCropUrl(product.Image,"square", true)" alt="..." />
+                            <img class="card-img-top" src="@product.Image" alt="..." />
                         }
                         <div class="card-body p-4">
                             <div class="text-center">

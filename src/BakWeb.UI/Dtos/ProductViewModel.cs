@@ -11,7 +11,7 @@ namespace BakWeb.Dtos
         }
 
         public string? DisplayName { get; set; }
-        public IPublishedContent? Image { get; set; }
+        public string? Image { get; set; }
         public string? Description { get; set; }
         public string? Url { get; set; }
 

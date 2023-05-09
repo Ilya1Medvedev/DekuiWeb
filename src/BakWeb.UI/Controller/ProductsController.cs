@@ -42,19 +42,22 @@ namespace BakWeb.Controller
             }
 
             var result = new ProductsViewModel(currentPage, new PublishedValueFallback(_context, _variationContextAccessor));
-            var products = currentPage.Children<Product>();
+            var products = currentPage.Children<Product>()?
+                .Where(x => !string.Equals(x.Status, "New", StringComparison.InvariantCultureIgnoreCase));
 
-            var paginationMetadata = Request.ExtractPaginationMetadata();
-
-            result.Products = products.Select(product => new ProductViewModel(product, new PublishedValueFallback(_context, _variationContextAccessor))
+            if (products != null)
             {
-                DisplayName = product.Name,
-                Image = product.Photo?.Content,
-                Description = product.Description,
-                Url = product.Url(),
-                IsReserved = _reservationsRepository.GetAll(x => x.ProductId == product.Key 
-                    && x.ReservationEndDate > DateTime.Now).Model.Any()
-            }).ToPagedList(paginationMetadata.Page, paginationMetadata.ItemsPerPage);
+                var paginationMetadata = Request.ExtractPaginationMetadata();
+                result.Products = products.Select(product => new ProductViewModel(product, new PublishedValueFallback(_context, _variationContextAccessor))
+                {
+                    DisplayName = product.Name,
+                    Image = product.Photo,
+                    Description = product.Description,
+                    Url = product.Url(),
+                    IsReserved = _reservationsRepository.GetAll(x => x.ProductId == product.Key
+                        && x.ReservationEndDate > DateTime.Now).Model.Any()
+                }).ToPagedList(paginationMetadata.Page, paginationMetadata.ItemsPerPage);
+            }
 
             return CurrentTemplate(result);
         }

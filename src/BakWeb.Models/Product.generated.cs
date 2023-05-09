@@ -62,16 +62,8 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "11.3.1+66434bf")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("photo")]
-		public virtual global::Umbraco.Cms.Core.Models.MediaWithCrops Photo => this.Value<global::Umbraco.Cms.Core.Models.MediaWithCrops>(_publishedValueFallback, "photo");
-
-		///<summary>
-		/// PhotoRawUrl: Only added via form approval process
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "11.3.1+66434bf")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("photoRawUrl")]
-		public virtual string PhotoRawUrl => this.Value<string>(_publishedValueFallback, "photoRawUrl");
+		[ImplementPropertyType("Photo")]
+		public virtual string Photo => this.Value<string>(_publishedValueFallback, "Photo");
 
 		///<summary>
 		/// Quality
@@ -88,5 +80,13 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("size")]
 		public virtual string Size => this.Value<string>(_publishedValueFallback, "size");
+
+		///<summary>
+		/// Status
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "11.3.1+66434bf")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("status")]
+		public virtual string Status => this.Value<string>(_publishedValueFallback, "status");
 	}
 }
