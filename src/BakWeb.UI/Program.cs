@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace BakWeb
 {
     public class Program
@@ -13,7 +15,11 @@ namespace BakWeb
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStaticWebAssets();
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>()
+                                .UseKestrel(options =>
+                                {
+                                    options.Listen(IPAddress.Parse("192.168.0.234"), 5000);
+                                });
                 });
     }
 }
