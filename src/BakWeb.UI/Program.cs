@@ -18,7 +18,7 @@ namespace BakWeb
                     webBuilder.UseStartup<Startup>()
                                 .UseKestrel(options =>
                                 {
-                                    options.Listen(IPAddress.Parse("192.168.0.234"), 5000);
+                                    options.Listen(IPAddress.Parse("192.168.166.64"), 5000);
                                 });
                 });
     }
