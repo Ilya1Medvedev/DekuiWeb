@@ -54,5 +54,8 @@ namespace BakWeb.Controller
         {
             return await _terminalClient.AddReservation(addReseravationRequest);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Ping() => Ok(await _terminalClient.Ping());
     }
 }

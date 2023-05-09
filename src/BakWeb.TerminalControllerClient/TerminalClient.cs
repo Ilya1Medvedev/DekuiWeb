@@ -33,4 +33,7 @@ public class TerminalClient
     public async Task<HttpResponseMessage> AddReservation(AddReseravationRequest addReseravationRequest) =>
        await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}/api/addreservation", addReseravationRequest);
 
+    public async Task<HttpResponseMessage> Ping() => 
+        await _httpClient.PostAsJsonAsync($"{_terminalControllerOptions.Value.BaseUrl}", new { });
+
 }
