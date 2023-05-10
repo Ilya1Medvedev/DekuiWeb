@@ -14,15 +14,12 @@ namespace BakWeb.Controller
 {
     public class ProductController : RenderController
     {
-        private KonstruktRepository<ReservationEntity, int> _reservationsRepository;
         private readonly IVariationContextAccessor _variationContextAccessor;
         private readonly ServiceContext _context;
 
         public ProductController(ILogger<RenderController> logger, ICompositeViewEngine compositeViewEngine, 
-            IUmbracoContextAccessor umbracoContextAccessor, IVariationContextAccessor variationContextAccessor, ServiceContext context,
-            IKonstruktRepositoryFactory repositoryFactory) : base(logger, compositeViewEngine, umbracoContextAccessor)
+            IUmbracoContextAccessor umbracoContextAccessor, IVariationContextAccessor variationContextAccessor, ServiceContext context) : base(logger, compositeViewEngine, umbracoContextAccessor)
         {
-            _reservationsRepository = repositoryFactory.GetRepository<ReservationEntity, int>();
             _variationContextAccessor = variationContextAccessor;
             _context = context;
         }
@@ -42,8 +39,8 @@ namespace BakWeb.Controller
                 Image = currentPage.Photo,
                 Description = currentPage.Description,
                 Url = currentPage.Url(),
-                IsReserved = _reservationsRepository.GetAll(x => x.ProductId == currentPage.Key 
-                    && x.ReservationEndDate > DateTime.Now).Model.Any()
+                IsReserved = currentPage.Reservations?.Cast<Umbraco.Cms.Web.Common.PublishedModels.Reservation>()
+                    .Any(x => x.EndDate > DateTime.Now) ?? false
             };
 
             return CurrentTemplate(productViewModel);

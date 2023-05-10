@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.4.3" />
     <PackageReference Include="Umbraco.Cms.Core" Version="11.3.1" />
     <PackageReference Include="Umbraco.Cms.Infrastructure" Version="11.3.1" />
   </ItemGroup>
