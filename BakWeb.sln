@@ -13,7 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakWeb.Core", "src\BakWeb.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakWeb.Reservation", "src\BakWeb.Reservation\BakWeb.Reservation.csproj", "{2E90E22C-481F-4836-904F-655D47C37DF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakWeb.TerminalControllerClient", "src\BakWeb.TerminalControllerClient\BakWeb.TerminalControllerClient.csproj", "{10B6537C-F840-40E5-B727-49EBD2C39C92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakWeb.TerminalControllerClient", "src\BakWeb.TerminalControllerClient\BakWeb.TerminalControllerClient.csproj", "{10B6537C-F840-40E5-B727-49EBD2C39C92}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DCE649AC-1D73-4711-8A9C-251B54680C94}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

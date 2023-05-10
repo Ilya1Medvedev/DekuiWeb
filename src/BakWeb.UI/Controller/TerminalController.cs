@@ -36,7 +36,7 @@ namespace BakWeb.Controller
 
             product.SetValue("Status", "Approved");
 
-            _contentService.Save(product);
+            _contentService.SaveAndPublish(product);
             return Ok();
         }
 

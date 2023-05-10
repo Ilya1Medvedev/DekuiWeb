@@ -1,4 +1,5 @@
-﻿using BakWeb.Dtos;
+﻿using BakWeb.Core.Models;
+using BakWeb.Dtos;
 using BakWeb.Extensions;
 using BakWeb.Options;
 using BakWeb.Reservation.Entities;
@@ -8,10 +9,12 @@ using BakWeb.TerminalControllerClient.Models;
 using Konstrukt.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common;
 using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco.Cms.Web.Common.Filters;
+using Umbraco.Cms.Web.Common.PublishedModels;
 
 namespace BakWeb.Controller
 {
@@ -22,6 +25,7 @@ namespace BakWeb.Controller
         private readonly SendGridService _sendGridService;
         private readonly IOptions<SendGridOptions> _sendGridOptions;
         private readonly TerminalClient _terminalClient;
+        private readonly IContentService _contentService;
         private KonstruktRepository<ReservationEntity, int> _reservationsRepository;
 
         private readonly int ReservationLimit = 3;
@@ -29,7 +33,7 @@ namespace BakWeb.Controller
 
         public ReservationsController(IKonstruktRepositoryFactory repositoryFactory, IMemberService memberService,
             IUmbracoHelperAccessor umbracoHelperAccessor, SendGridService sendGridService, IOptions<SendGridOptions> sendGridOptions,
-            TerminalClient terminalClient)
+            TerminalClient terminalClient, IContentService contentService)
         {
             _reservationsRepository = repositoryFactory.GetRepository<ReservationEntity, int>();
             _memberService = memberService;
@@ -37,6 +41,7 @@ namespace BakWeb.Controller
             _sendGridService = sendGridService;
             _sendGridOptions = sendGridOptions;
             _terminalClient = terminalClient;
+            _contentService = contentService;
         }
 
         [UmbracoMemberAuthorize]
@@ -50,46 +55,58 @@ namespace BakWeb.Controller
                 return NotFound("Internal error");
             }
 
-            var currentUser = User.Identity;
-            var member = _memberService.GetById(currentUser!.GetUserId<int>());
-
-            // Check if member has reservations. If more then 3, 403 - Forbidden (Too many reservations)
-            var memberActiveReservations = _reservationsRepository.GetAll(x => x.MemberId == member!.Key && x.ReservationEndDate > DateTime.Now);
-            if (memberActiveReservations.Success && memberActiveReservations.Model.Count() >= ReservationLimit)
-            {
-                return Forbid("Too many reservations");
-            }
-
-            var product = umbracoHelper!.Content(reservationRequest.ProductId);
+            var product = umbracoHelper!.Content(reservationRequest.ProductId) as Product;
             if (product == null)
             {
                 return NotFound("Product does not exists");
             }
 
-            var productActiveReservation = _reservationsRepository.GetAll(x => x.ProductId == reservationRequest.ProductId
-                && x.ReservationEndDate > DateTime.Now).Model.FirstOrDefault();
+            var currentUser = User.Identity;
+            var member = _memberService.GetById(currentUser!.GetUserId<int>());
+
+            var memberActiveReservations = product
+                .Siblings<Product>()
+                .Where(x => x.Reservations != null)
+                .SelectMany(x => x.Reservations.Cast<Umbraco.Cms.Web.Common.PublishedModels.Reservation>()
+                    .Where(y => y.Member?.Id == member?.Id && y.EndDate > DateTime.Now));
+
+            // Check if member has reservations. If more then 3, 403 - Forbidden (Too many reservations)
+            if (memberActiveReservations.Count() >= ReservationLimit)
+            {
+                return Forbid("Too many reservations");
+            }
+
+            var isProductReserved = product.Reservations?.Cast<Umbraco.Cms.Web.Common.PublishedModels.Reservation>()
+                .Any(x => x.EndDate > DateTime.Now) ?? false;
 
             // Check if current product not reserved. If reserved 403 - Forbidden (Already reserved)
-            if (productActiveReservation != null)
+            if (isProductReserved)
             {
                 return Forbid("Product is already reserved");
             }
 
-            var reservation = new ReservationEntity
+            var uniqueNumberOut = CodeGenerator.RandomCode(ReservationCodeLength);
+
+            var reservationStartDate = DateTime.Now;
+            var reservationEndDate = DateTime.Now.AddDays(1);
+
+            var reservationElementTypeModel = new ElementTypeModel<ReservationElementTypeModel>
             {
-                MemberId = member!.Key,
-                ProductId = reservationRequest.ProductId,
-                Name = $"{product.Name} for '{member.Email}'",
-                ReservationDate = DateTime.Now,
-                ReservationEndDate = DateTime.Now.AddDays(1),
-                UniqueNumber = GenerateUniqueCode()
+                Key = "cca5d485-5028-4342-a4fd-12ae6571d8e6",
+                ElementType = "92b1a372-669e-4e3e-b767-847c10a2b136",
+                Value = new ReservationElementTypeModel
+                {
+                    EndDate = reservationEndDate,
+                    StartDate = reservationStartDate,
+                    Member = member.GetUdi().ToString(),
+                    UniqueCodeOut = uniqueNumberOut.ToString()
+                }
             };
 
-            var reservationResult = _reservationsRepository.Insert(reservation);
-            if (!reservationResult.Success)
-            {
-                return BadRequest("Failed to create a reservation");
-            }
+            var productContent = _contentService.GetById(product.Id);
+            productContent!.SetValue("Reservations", JsonConvert.SerializeObject(reservationElementTypeModel.AsEnumerableOfOne()));
+
+            _contentService.SaveAndPublish(productContent);
 
             await _sendGridService.SendEmailWithTemplateAsync(member.Email,
                 _sendGridOptions.Value.Templates!.ReservationConfirmationTemplateId!,
@@ -97,16 +114,16 @@ namespace BakWeb.Controller
                 {
                     SenderName = member.Name,
                     ProductName = product.Name,
-                    UniqueCode = reservation.UniqueNumber,
-                    ReservationEndDate = reservation.ReservationEndDate.ToString("U")
+                    UniqueCode = uniqueNumberOut,
+                    ReservationEndDate = reservationEndDate.ToString("U")
                 });
 
             var terminalReservationRequest = new AddReseravationRequest
             {
                 MemberId = member.Key,
-                ProductId = reservation.ProductId,
+                ProductId = product.Key,
                 PhotoUrl = product.Value<string>("Photo"),
-                UniqueCode = reservation.UniqueNumber
+                UniqueCode = uniqueNumberOut
             };
 
             await _terminalClient.TryAddReservation(terminalReservationRequest);
