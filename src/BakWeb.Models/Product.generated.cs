@@ -58,6 +58,14 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual string Description => this.Value<string>(_publishedValueFallback, "description");
 
 		///<summary>
+		/// Owner
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "11.3.1+66434bf")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("owner")]
+		public virtual global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent Owner => this.Value<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>(_publishedValueFallback, "owner");
+
+		///<summary>
 		/// Photo
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "11.3.1+66434bf")]
@@ -88,5 +96,21 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("status")]
 		public virtual string Status => this.Value<string>(_publishedValueFallback, "status");
+
+		///<summary>
+		/// Unique Code [In]
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "11.3.1+66434bf")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("uniqueCodeIn")]
+		public virtual string UniqueCodeIn => this.Value<string>(_publishedValueFallback, "uniqueCodeIn");
+
+		///<summary>
+		/// Unique Code [Out]
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "11.3.1+66434bf")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("uniqueCodeOut")]
+		public virtual string UniqueCodeOut => this.Value<string>(_publishedValueFallback, "uniqueCodeOut");
 	}
 }
