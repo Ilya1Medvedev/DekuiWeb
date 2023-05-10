@@ -44,12 +44,15 @@
                 </div>
             }
         </div>
-        @Html.PagedListPager(Model.Products,page => $"?page={page}", new PagedListRenderOptions
+        @if (Model.Products.Count >= 10)
+        {
+            @Html.PagedListPager(Model.Products,page => $"?page={page}", new PagedListRenderOptions
         {
         PageClasses = new string[] { "page-link" },
         UlElementClasses = new string[] { "pagination" },
         LiElementClasses = new string[] { "page-item" },
         ActiveLiElementClass = "active",
         })
+        }
     </div>
 </section>

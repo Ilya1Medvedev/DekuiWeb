@@ -63,8 +63,6 @@ namespace BakWeb.Notifications
                 };
 
                 var uniqueCodeIn = CodeGenerator.RandomCode(ReservationCodeLength);
-                var uniqueCodeOut = CodeGenerator.RandomCode(ReservationCodeLength);
-
                 var newProduct = _contentService.Create(recordFields.Name, 1065, "Product");
 
                 newProduct.SetValue("Status", recordFields.Status);
@@ -74,7 +72,6 @@ namespace BakWeb.Notifications
                 newProduct.SetValue("Quality", $"[\"{recordFields.Quality}\"]");
                 newProduct.SetValue("Owner", recordFields.Owner);
                 newProduct.SetValue("UniqueCodeIn", uniqueCodeIn);
-                newProduct.SetValue("UniqueCodeOut", uniqueCodeOut);
 
                 _contentService.SaveAndPublish(newProduct);
 

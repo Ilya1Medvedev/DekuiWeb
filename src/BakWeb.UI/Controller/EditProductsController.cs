@@ -17,19 +17,27 @@ public class EditProductsController : RenderController
 {
     private readonly IVariationContextAccessor _variationContextAccessor;
     private readonly ServiceContext _context;
+    private readonly IMemberService _memberService;
 
     public EditProductsController(ILogger<RenderController> logger, ICompositeViewEngine compositeViewEngine,
-        IUmbracoContextAccessor umbracoContextAccessor, IVariationContextAccessor variationContextAccessor, ServiceContext context) : base(logger, compositeViewEngine, umbracoContextAccessor)
+        IUmbracoContextAccessor umbracoContextAccessor, IVariationContextAccessor variationContextAccessor, ServiceContext context, IMemberService memberService) : base(logger, compositeViewEngine, umbracoContextAccessor)
     {
         _variationContextAccessor = variationContextAccessor;
         _context = context;
+        _memberService = memberService;
     }
 
+    [UmbracoMemberAuthorize]
     public override IActionResult Index()
     {
+        var currentUser = User.Identity;
+        var member = _memberService.GetById(currentUser!.GetUserId<int>());
+
         var products = CurrentPage.Siblings<Products>()
             .FirstOrDefault()
-            .Children<Product>()?.Where(x => string.Equals(x.Status, "New", StringComparison.InvariantCultureIgnoreCase));
+            .Children<Product>()?
+            .Where(x => string.Equals(x.Status, "New", StringComparison.InvariantCultureIgnoreCase)
+                && x.Owner?.Key == member?.Key);
 
         var result = new ProductsViewModel(CurrentPage, new PublishedValueFallback(_context, _variationContextAccessor));
 
@@ -42,7 +50,8 @@ public class EditProductsController : RenderController
                 Image = product.Photo,
                 Description = product.Description,
                 Url = product.Url(),
-                IsReserved = false,
+                IsReserved = product.Reservations?.Cast<Umbraco.Cms.Web.Common.PublishedModels.Reservation>()
+                    .Any(x => x.EndDate > DateTime.Now) ?? false,
             }).ToPagedList(paginationMetadata.Page, paginationMetadata.ItemsPerPage);
         }
 
@@ -52,10 +61,23 @@ public class EditProductsController : RenderController
 
 public class EditProductsApiController : UmbracoApiController
 {
-    [UmbracoMemberAuthorize]
-    [HttpGet]
-    public IActionResult Delete([FromQuery] Guid productId)
+    private readonly IContentService _contentService;
+
+    public EditProductsApiController(IContentService contentService)
     {
-        return Ok();
+        _contentService = contentService;
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromQuery] int productId)
+    {
+        var product = _contentService.GetById(productId);
+        if (product != null)
+        {
+            _contentService.Delete(product);
+            return Ok();
+        }
+
+        return NotFound();
     }
 }

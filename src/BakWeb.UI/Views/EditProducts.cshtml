@@ -44,13 +44,17 @@
                 </div>
             }
         </div>
-        @Html.PagedListPager(Model.Products,page => $"?page={page}", new PagedListRenderOptions
+
+        @if (Model.Products.Count >= 10)
         {
-        PageClasses = new string[] { "page-link" },
-        UlElementClasses = new string[] { "pagination" },
-        LiElementClasses = new string[] { "page-item" },
-        ActiveLiElementClass = "active",
-        })
+            @Html.PagedListPager(Model.Products,page => $"?page={page}", new PagedListRenderOptions
+            {
+                PageClasses = new string[] { "page-link" },
+                UlElementClasses = new string[] { "pagination" },
+                LiElementClasses = new string[] { "page-item" },
+                ActiveLiElementClass = "active",
+            })
+        }
     </div>
 </section>
 
@@ -59,21 +63,22 @@
     <script>
         function deleteProduct(productId) {
             // replace with your API endpoint
-            var apiUrl = '/umbraco/api/EditProductsApi/detete?productId=' + productId;
+            var apiUrl = '/umbraco/api/EditProductsApi/delete?productId=' + productId;
 
             // call the API
             fetch(apiUrl, {
                 method: 'DELETE',
             })
-                .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
+                    if (data.status === 200) {
                         // remove the product from the DOM
                         var productElement = document.getElementById('product-' + productId);
-                        productElement.parentNode.removeChild(productElement);
-                    } else {
-                        // handle error
-                        console.error('Error:', data);
+                        if (productElement) {
+                            productElement.parentNode.removeChild(productElement);
+                        }
+                    } else if (response.status === 404) {
+                        // handle 404
+                        console.log('Product not found: ', productId);
                     }
                 })
                 .catch((error) => {
