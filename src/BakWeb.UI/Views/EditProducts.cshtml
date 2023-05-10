@@ -1,0 +1,84 @@
+﻿@using BakWeb.Dtos;
+@using System.Web;
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Http
+@using BakWeb.Core.Extensions
+@using X.PagedList.Web.Common
+
+@inherits UmbracoViewPage<ProductsViewModel>
+
+@{
+    Layout = "Master.cshtml";
+}
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @foreach (var product in Model.Products)
+            {
+                <div class="col mb-5" id="product-@product.Id">
+                    <div class="card h-100">
+                        @if (product.Image != null)
+                        {
+                            <img class="card-img-top" src="@product.Image" alt="..." />
+                        }
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">
+                                    @product.DisplayName
+                                    @if (product.IsReserved)
+                                    {
+                                        <span class="badge bg-danger">Reserved</span>
+                                    }
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <button class="btn btn-outline-danger mt-auto" onclick="deleteProduct(@product.Id)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        @Html.PagedListPager(Model.Products,page => $"?page={page}", new PagedListRenderOptions
+        {
+        PageClasses = new string[] { "page-link" },
+        UlElementClasses = new string[] { "pagination" },
+        LiElementClasses = new string[] { "page-item" },
+        ActiveLiElementClass = "active",
+        })
+    </div>
+</section>
+
+
+@section Scripts {
+    <script>
+        function deleteProduct(productId) {
+            // replace with your API endpoint
+            var apiUrl = '/umbraco/api/EditProductsApi/detete?productId=' + productId;
+
+            // call the API
+            fetch(apiUrl, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // remove the product from the DOM
+                        var productElement = document.getElementById('product-' + productId);
+                        productElement.parentNode.removeChild(productElement);
+                    } else {
+                        // handle error
+                        console.error('Error:', data);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+}
