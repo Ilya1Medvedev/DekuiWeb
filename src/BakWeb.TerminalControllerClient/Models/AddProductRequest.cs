@@ -6,4 +6,6 @@ public class AddProductRequest
     public Guid MemberId { get; set; }
     public string? PhotoUrl { get; set; }
     public int UniqueCode { get; set; }
+
+    public string? PhotoBase64 { get; set; }
 }

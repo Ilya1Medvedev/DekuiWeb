@@ -33,10 +33,12 @@ namespace BakWeb.Notifications
         private readonly TerminalClient _terminalClient;
         private readonly IOptions<FormOptions> _formOptions;
         private readonly IContentService _contentService;
+        private readonly IMediaService _mediaService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public FormSavedNotificationHandler(SendGridService sendGridService, IMemberService memberService,
             IRecordReaderService recordReaderService, IOptions<SendGridOptions> sendGridOptions, TerminalClient terminalClient,
-            IOptions<FormOptions> formOptions, IContentService contentService)
+            IOptions<FormOptions> formOptions, IContentService contentService, IMediaService mediaService, IHttpContextAccessor httpContextAccessor)
         {
             _sendGridService = sendGridService;
             _memberService = memberService;
@@ -45,6 +47,8 @@ namespace BakWeb.Notifications
             _terminalClient = terminalClient;
             _formOptions = formOptions;
             _contentService = contentService;
+            _mediaService = mediaService;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task HandleAsync(RecordCreatingNotification notification, CancellationToken cancellationToken)
         {
@@ -74,7 +78,6 @@ namespace BakWeb.Notifications
                 newProduct.SetValue("Quality", $"[\"{recordFields.Quality}\"]");
                 newProduct.SetValue("Owner", recordFields.Owner);
                 newProduct.SetValue("UniqueCodeIn", uniqueCodeIn);
-                newProduct.SetValue("UniqueCodeOut", uniqueCodeOut);
 
                 _contentService.SaveAndPublish(newProduct);
 
@@ -94,6 +97,12 @@ namespace BakWeb.Notifications
                     ProductId = newProduct.Key,
                     UniqueCode = uniqueCodeIn
                 };
+
+                var httpContext = _httpContextAccessor.HttpContext;
+
+                using HttpClient client = new();
+                var imageBytes = await client.GetByteArrayAsync($"{httpContext.Request.Scheme}://{httpContext.Request.Host.Value}{recordFields.Photo.Replace("\\", string.Empty)}");
+                addProductRequest.PhotoBase64 = Convert.ToBase64String(imageBytes);
 
                 await _terminalClient.TryAddProduct(addProductRequest);
             }
