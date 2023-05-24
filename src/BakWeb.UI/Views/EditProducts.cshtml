@@ -18,7 +18,7 @@
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             @foreach (var product in Model.Products)
             {
-                <div class="col mb-5">
+                <div class="col mb-5" id="product-@product.Id">
                     <div class="card h-100">
                         @if (product.Image != null)
                         {
@@ -37,22 +37,53 @@
                         </div>
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             <div class="text-center">
-                                <a class="btn btn-outline-dark mt-auto" href="@product.Url">View</a>
+                                <button class="btn btn-outline-danger mt-auto" onclick="deleteProduct(@product.Id)">Delete</button>
                             </div>
                         </div>
                     </div>
                 </div>
             }
         </div>
+
         @if (Model.Products.Count >= 10)
         {
             @Html.PagedListPager(Model.Products,page => $"?page={page}", new PagedListRenderOptions
-        {
-        PageClasses = new string[] { "page-link" },
-        UlElementClasses = new string[] { "pagination" },
-        LiElementClasses = new string[] { "page-item" },
-        ActiveLiElementClass = "active",
-        })
+            {
+                PageClasses = new string[] { "page-link" },
+                UlElementClasses = new string[] { "pagination" },
+                LiElementClasses = new string[] { "page-item" },
+                ActiveLiElementClass = "active",
+            })
         }
     </div>
 </section>
+
+
+@section Scripts {
+    <script>
+        function deleteProduct(productId) {
+            // replace with your API endpoint
+            var apiUrl = '/umbraco/api/EditProductsApi/delete?productId=' + productId;
+
+            // call the API
+            fetch(apiUrl, {
+                method: 'DELETE',
+            })
+                .then(data => {
+                    if (data.status === 200) {
+                        // remove the product from the DOM
+                        var productElement = document.getElementById('product-' + productId);
+                        if (productElement) {
+                            productElement.parentNode.removeChild(productElement);
+                        }
+                    } else if (response.status === 404) {
+                        // handle 404
+                        console.log('Product not found: ', productId);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+}

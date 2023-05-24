@@ -67,8 +67,6 @@ namespace BakWeb.Notifications
                 };
 
                 var uniqueCodeIn = CodeGenerator.RandomCode(ReservationCodeLength);
-                var uniqueCodeOut = CodeGenerator.RandomCode(ReservationCodeLength);
-
                 var newProduct = _contentService.Create(recordFields.Name, 1065, "Product");
 
                 newProduct.SetValue("Status", recordFields.Status);
