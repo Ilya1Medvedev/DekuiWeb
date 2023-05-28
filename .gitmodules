@@ -1,0 +1,6 @@
+[submodule "PictureComparison"]
+	path = PictureComparison
+	url = https://github.com/Raduk900/PictureComparison.git
+[submodule "SimpleKeydoor"]
+	path = SimpleKeydoor
+	url = https://github.com/Raduk900/TerminalBox.git
