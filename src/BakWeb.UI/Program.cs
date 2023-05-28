@@ -15,11 +15,11 @@ namespace BakWeb
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStaticWebAssets();
-                    webBuilder.UseStartup<Startup>();
-                                //.UseKestrel(options =>
-                                //{
-                                //    options.Listen(IPAddress.Parse("192.168.166.64"), 5000);
-                                //});
+                    webBuilder.UseStartup<Startup>()
+                                .UseKestrel(options =>
+                                {
+                                   options.Listen(IPAddress.Parse("192.168.69.64"), 5000);
+                                });
                 });
     }
 }
